@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Lift</title>
+        <style type="text/css">
+            .view {
+                width: 400px;
+                height: 400px;
+                border: 1px solid black;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .building {
+                width: 150px;
+                position: absolute;
+                top: 0px;
+                left: 48px;
+                border-bottom: 1px solid black;
+            }
+
+            .floor {
+                height: 180px;
+                overflow: hidden;
+                position: relative;
+                border-left: 1px solid black;
+                border-right: 1px solid black;
+            }
+
+            .floor2 {
+                height: 15px;
+                background-color: gray;
+            }
+
+            .number {
+                font-size: 14px;
+                text-indent: 55px;
+                color: darkred;
+                margin-top: 22px;
+            }
+
+            .door {
+                height: 100px;
+                width: 100px;
+                margin-left: 10px;
+                margin-top: 25px;
+                display: flex;
+                flex-direction: row;
+                overflow: hidden;
+            }
+
+            .door-left,
+            .door-right {
+                height: 100px;
+                width: 48px;
+                border: 1px solid black;
+            }
+
+            .buttons {
+                width: 50px;
+                position: absolute;
+                left: 113px;
+                bottom: 25px;
+            }
+
+            .buttons button {
+                color: gray;
+                border: none;
+                background-color: transparent;
+            }
+
+            .btnUp {
+                margin-bottom: 6px;
+            }
+
+            .tips {
+                color: gray;
+            }
+        </style>
+        <script type="text/javascript">
+            // 初始数据
+            const ViewHeight = 400;
+            const FloorHeight = 180;
+            const FloorCount = 32;
+            let building = {
+                floors: []
+            };
+            for (let i = 0; i < FloorCount; i++) {
+                let floor = {
+                    number: i + 1
+                };
+                building.floors.push(floor);
+            }
+            // 渲染
+            let html =
+                `
+                <div class="floor">
+                    <div class="floor2"></div>
+                    <div class="number">NUMBER</div>
+                    <div class="door">
+                        <div class="door-left"></div>
+                        <div class="door-right"></div>
+                    </div>
+                    <div class="buttons">
+                        <button class="btnUp">🔼</button>
+                        <button class="btnDown">🔽</button>
+                    </div>
+                </div>`;
+            let divBuilding;
+
+            function initial() {
+                let div = document.createElement("div");
+                divBuilding = document.querySelector(".building");
+                let ref = null;
+                for (floor of building.floors) {
+                    div.innerHTML = html;
+                    div.querySelector(".number").innerHTML = floor.number;
+                    item = div.querySelector(".floor");
+                    div.removeChild(item);
+                    divBuilding.insertBefore(item, ref);
+                    ref = item;
+                }
+                divBuilding.top = -FloorHeight * FloorCount + ViewHeight;
+                divBuilding.style.top = divBuilding.top + "px";
+            }
+
+            function mousewheel() {
+                if (event.wheelDelta) {
+                    let value = Math.round(event.wheelDelta / 120);
+                    divBuilding.top += value * 20;
+                    divBuilding.style.top = divBuilding.top + "px";
+                }
+            }
+            window.onload = function() {
+                initial();
+                document.body.onmousewheel = mousewheel;
+            }
+        </script>
+
+    </head>
+    <body>
+        <div class="view">
+            <div class="building">
+            </div>
+        </div>
+        <p class="tips">用鼠标滚轮移动视口</p>
+    </body>
+</html>
